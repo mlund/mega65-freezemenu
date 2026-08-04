@@ -6,8 +6,10 @@
 #include "fdisk_screen.h"
 #include "ascii.h"
 
-#define POKE(X, Y) (*(unsigned char *)(X)) = Y
-#define PEEK(X) (*(unsigned char *)(X))
+/* volatile is required: usleep() polls $D012 in a loop with no other changing
+ * input, so a non-volatile read is hoisted out and the loop deleted. */
+#define POKE(X, Y) (*(volatile unsigned char *)(X)) = Y
+#define PEEK(X) (*(volatile unsigned char *)(X))
 
 const long sd_sectorbuffer = 0xffd6e00L;
 const uint16_t sd_ctl = 0xd680L;
